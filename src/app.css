@@ -1,0 +1,278 @@
+body {
+  margin: 0;
+  background: #f3f4f6;
+}
+
+.airforms-app {
+  min-height: 100vh;
+}
+
+.airforms-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(320px, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.airforms-debug-panel {
+  position: sticky;
+  top: 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  background: #ffffff;
+  padding: 12px;
+  max-height: calc(100vh - 32px);
+  overflow: auto;
+}
+
+.airforms-debug-panel h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.airforms-debug-panel > p {
+  margin: 6px 0 10px;
+  color: #4b5563;
+  font-size: 0.88rem;
+}
+
+.airforms-debug-empty {
+  margin: 0;
+  color: #6b7280;
+}
+
+.airforms-debug-turn {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #f8fafc;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.airforms-debug-turn-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 0.82rem;
+  color: #4b5563;
+}
+
+.airforms-debug-badges {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.airforms-debug-badge {
+  font-size: 0.75rem;
+  line-height: 1;
+  border: 1px solid #d1d5db;
+  border-radius: 999px;
+  padding: 4px 8px;
+  background: #ffffff;
+  color: #374151;
+}
+
+.airforms-debug-badge-ui {
+  border-color: #93c5fd;
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.airforms-debug-badge-slider {
+  border-color: #86efac;
+  background: #f0fdf4;
+  color: #166534;
+}
+
+.airforms-debug-badge-mismatch {
+  border-color: #fca5a5;
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.airforms-debug-badge-patched {
+  border-color: #c4b5fd;
+  background: #f5f3ff;
+  color: #5b21b6;
+}
+
+.airforms-debug-turn h3 {
+  margin: 10px 0 6px;
+  font-size: 0.86rem;
+  color: #1f2937;
+}
+
+.airforms-debug-json {
+  margin: 0;
+  background: #111827;
+  color: #e5e7eb;
+  border-radius: 8px;
+  border: 1px solid #1f2937;
+  padding: 8px;
+  font-size: 0.76rem;
+  line-height: 1.35;
+  max-height: 260px;
+  overflow: auto;
+}
+
+.airforms-debug-error {
+  margin-top: 10px;
+  border: 1px solid #fecaca;
+  background: #fef2f2;
+  color: #b91c1c;
+  border-radius: 8px;
+  padding: 8px;
+  font-size: 0.82rem;
+}
+
+.airforms-slider-diagnostics {
+  margin-top: 10px;
+  border: 1px solid #d1fae5;
+  border-radius: 8px;
+  background: #ecfdf5;
+  padding: 8px;
+}
+
+.airforms-slider-diagnostics h3 {
+  margin-top: 0;
+}
+
+.airforms-slider-diagnostics ul {
+  margin: 6px 0 0;
+  padding-left: 18px;
+  font-size: 0.82rem;
+  color: #134e4a;
+}
+
+.airforms-slider-warning {
+  margin: 0;
+  color: #92400e;
+  font-size: 0.82rem;
+}
+
+@media (max-width: 980px) {
+  .airforms-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .airforms-debug-panel {
+    position: static;
+    max-height: none;
+  }
+}
+
+.airforms-message {
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+}
+
+.airforms-message-assistant {
+  border-left: 4px solid #93c5fd;
+}
+
+.airforms-message-user {
+  border-left: 4px solid #60a5fa;
+}
+
+.airforms-generated-ui form {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid #dbeafe;
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+.airforms-generated-ui h2 {
+  margin: 0 0 2px;
+  font-size: 1rem;
+  color: #1f2937;
+}
+
+.airforms-generated-ui label {
+  display: grid;
+  gap: 6px;
+  font-size: 0.92rem;
+  color: #374151;
+}
+
+.airforms-generated-ui input,
+.airforms-generated-ui select,
+.airforms-generated-ui textarea,
+.airforms-generated-ui button {
+  font: inherit;
+}
+
+.airforms-generated-ui input[type='text'],
+.airforms-generated-ui input[type='number'],
+.airforms-generated-ui input[type='date'],
+.airforms-generated-ui select,
+.airforms-generated-ui textarea {
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 8px 10px;
+  background: #ffffff;
+  color: #111827;
+}
+
+.airforms-generated-ui textarea {
+  min-height: 88px;
+  resize: vertical;
+}
+
+.airforms-generated-ui input[type='range'] {
+  width: 100%;
+}
+
+.airforms-generated-ui output {
+  justify-self: start;
+  font-size: 0.85rem;
+  color: #4b5563;
+  background: #f3f4f6;
+  border-radius: 999px;
+  padding: 2px 8px;
+}
+
+.airforms-generated-ui small[role='alert'] {
+  color: #b91c1c;
+  font-size: 0.8rem;
+}
+
+.airforms-generated-ui [aria-invalid='true'] {
+  border-color: #f87171;
+  background: #fff5f5;
+}
+
+.airforms-generated-ui button[type='submit'] {
+  justify-self: start;
+  border: 1px solid #1d4ed8;
+  border-radius: 8px;
+  background: #1d4ed8;
+  color: #ffffff;
+  padding: 8px 14px;
+  cursor: pointer;
+}
+
+.airforms-generated-ui button[type='submit']:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.airforms-generated-ui [role='button'] {
+  border: 1px dashed #9ca3af;
+  border-radius: 8px;
+  padding: 8px;
+  color: #374151;
+  background: #f9fafb;
+}
+
+.airforms-generated-ui pre {
+  margin: 0;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  overflow: auto;
+}
