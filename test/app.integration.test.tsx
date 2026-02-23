@@ -52,6 +52,7 @@ describe('App integration flow', () => {
     expect(firstCall?.[0]).toBe('http://localhost:3000/turn')
     const firstPayload = JSON.parse(String((firstCall?.[1] as RequestInit | undefined)?.body ?? '{}'))
     expect(firstPayload.message.type).toBe('user_text')
+    expect(firstPayload.formSensitivity).toBe(10)
 
     await screen.findByText('Assistant:')
     await screen.findByText('Please enter your policy details.')
@@ -64,6 +65,10 @@ describe('App integration flow', () => {
     await userEvent.type(screen.getByLabelText('Date of birth'), '1988-07-01')
     fireEvent.change(screen.getByLabelText('Urgency'), { target: { value: '7' } })
     await userEvent.click(screen.getByRole('button', { name: 'Look up' }))
+
+    const secondCall = mockFetch.mock.calls[1]
+    const secondPayload = JSON.parse(String((secondCall?.[1] as RequestInit | undefined)?.body ?? '{}'))
+    expect(secondPayload.formSensitivity).toBe(10)
 
     await waitFor(() => {
       expect(screen.getByText('Looking up your policy...')).toBeInTheDocument()
@@ -104,5 +109,36 @@ describe('App integration flow', () => {
     expect(screen.getByText('assistantMentionsSlider: true')).toBeInTheDocument()
     expect(screen.getByText('sliderIntentMismatch: true')).toBeInTheDocument()
     expect(screen.getByText('No slider component in this ui_frame response.')).toBeInTheDocument()
+  })
+
+  it('retries once without formSensitivity when orchestrator rejects request payload', async () => {
+    mockFetch
+      .mockResolvedValueOnce({
+        ok: false,
+        status: 400,
+        text: async () => 'Invalid turn request payload.'
+      } as Response)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          conversationId: 'c_demo',
+          messages: [{ type: 'assistant_message', text: 'Fallback-compatible success.' }]
+        })
+      } as Response)
+
+    render(<App />)
+
+    await userEvent.type(screen.getByLabelText('Message'), 'hello')
+    await userEvent.click(screen.getByRole('button', { name: 'Send' }))
+
+    await screen.findByText('Fallback-compatible success.')
+
+    expect(mockFetch).toHaveBeenCalledTimes(2)
+
+    const firstPayload = JSON.parse(String((mockFetch.mock.calls[0]?.[1] as RequestInit | undefined)?.body ?? '{}'))
+    const secondPayload = JSON.parse(String((mockFetch.mock.calls[1]?.[1] as RequestInit | undefined)?.body ?? '{}'))
+
+    expect(firstPayload.formSensitivity).toBe(10)
+    expect(secondPayload.formSensitivity).toBeUndefined()
   })
 })

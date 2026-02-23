@@ -3,7 +3,7 @@ import { ChatUIRenderer } from '@airforms/renderer-react'
 import type { UiFrame } from '@airforms/renderer-react'
 import type { TurnRequest, TurnResponse, UiSubmit } from '@airforms/ui-schema'
 import { sendTurn } from './api/orchestrator'
-import { clearConversationId, getOrCreateConversationId } from './state/session'
+import { clearConversationId, clearFormSensitivity, getOrCreateConversationId, getOrCreateFormSensitivity, setFormSensitivity } from './state/session'
 import type { ChatMessage, TurnDebugEntry } from './types/chat'
 import './app.css'
 
@@ -110,6 +110,7 @@ function toRendererFrame(response: TurnResponse): UiFrame | undefined {
 
 export function App() {
   const conversationId = useMemo(() => getOrCreateConversationId(), [])
+  const [formSensitivity, setFormSensitivityState] = useState(() => getOrCreateFormSensitivity())
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [text, setText] = useState('')
   const [activeFrameId, setActiveFrameId] = useState<string | undefined>(undefined)
@@ -195,6 +196,7 @@ export function App() {
     await applyTurn(
       {
         conversationId,
+        formSensitivity,
         message: {
           type: 'user_text',
           text: trimmed
@@ -211,6 +213,7 @@ export function App() {
 
     await applyTurn({
       conversationId,
+      formSensitivity,
       message: submit
     })
   }
@@ -295,6 +298,24 @@ export function App() {
               background: '#ffffff'
             }}
           >
+            <label style={{ display: 'flex', flexDirection: 'column', gap: 4, fontSize: 12, color: '#4b5563' }}>
+              Form sensitivity (1-10)
+              <input
+                aria-label="Form sensitivity"
+                type="number"
+                min={1}
+                max={10}
+                step={1}
+                value={formSensitivity}
+                disabled={pending}
+                onChange={(event) => {
+                  const next = Number.parseInt(event.target.value, 10)
+                  const normalized = setFormSensitivity(Number.isNaN(next) ? formSensitivity : next)
+                  setFormSensitivityState(normalized)
+                }}
+                style={{ width: 80, padding: 8, borderRadius: 8, border: '1px solid #d1d5db' }}
+              />
+            </label>
             <input
               aria-label="Message"
               value={text}
@@ -323,6 +344,7 @@ export function App() {
               style={{ borderRadius: 8, border: '1px solid #d1d5db', background: '#ffffff', padding: '0 12px' }}
               onClick={() => {
                 clearConversationId()
+                clearFormSensitivity()
                 window.location.reload()
               }}
             >

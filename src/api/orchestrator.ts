@@ -13,6 +13,35 @@ export async function sendTurn(payload: TurnRequest): Promise<TurnResponse> {
     body: JSON.stringify(payload)
   })
 
+  if (
+    !response.ok &&
+    response.status === 400 &&
+    typeof payload.formSensitivity === 'number'
+  ) {
+    const retryPayload = { ...payload }
+    delete retryPayload.formSensitivity
+
+    const retryResponse = await fetch(`${baseUrl()}/turn`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(retryPayload)
+    })
+
+    if (!retryResponse.ok) {
+      const retryMessage = await retryResponse.text()
+      throw new Error(`Orchestrator request failed (${retryResponse.status}): ${retryMessage}`)
+    }
+
+    const retryRaw = (await retryResponse.json()) as Partial<TurnResponse>
+    if (!isTurnResponse(retryRaw)) {
+      throw new Error('Received invalid turn response payload from orchestrator.')
+    }
+
+    return retryRaw
+  }
+
   if (!response.ok) {
     const message = await response.text()
     throw new Error(`Orchestrator request failed (${response.status}): ${message}`)
